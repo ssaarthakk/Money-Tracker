@@ -11,14 +11,14 @@ Make sure you have the following installed on your device:
 Clone the repository to your local machine by running:
 
 ```sh
-git clone https://github.com/ssaarthakk/Budget-Management.git
+git clone https://github.com/ssaarthakk/Money-Tracker.git
 ```
 
 ### 2. Navigate to the Project Directory
 Change to the project directory:
 
 ```sh
-cd Budget-Management
+cd Money-Tracker
 ```
 
 ### 3. Configure Environment Variables

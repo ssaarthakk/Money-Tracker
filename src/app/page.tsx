@@ -41,7 +41,7 @@ export default async function Home() {
                         <h3 className="text-lg font-semibold mb-2">Income vs Expense</h3>
                         <IncomeExpense />
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2" id="transactions">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2">
                         <TransactionList />
                       </div>
                     </div>

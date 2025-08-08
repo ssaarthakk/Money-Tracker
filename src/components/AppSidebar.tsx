@@ -1,20 +1,17 @@
 "use client";
 import { useState } from "react";
 import { useSidebar, Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { IconDashboard, IconHome, IconCreditCard, IconUser, IconSettings } from "@tabler/icons-react";
+import { IconHome } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
-import ClientProfile from "./ClientProfile";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 
 const links = [
   {
     label: "Dashboard",
     href: "/",
     icon: <IconHome className="text-neutral-700 dark:text-neutral-200 h-5 w-5" />,
-  },
-  {
-    label: "Transactions", 
-    href: "#transactions",
-    icon: <IconCreditCard className="text-neutral-700 dark:text-neutral-200 h-5 w-5" />,
   },
 ];
 
@@ -23,9 +20,9 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
   const { data: session } = useSession();
 
   return (
-    <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 max-w-7xl mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen">
+    <div className="flex flex-col md:flex-row w-screen h-screen bg-neutral-900 text-white overflow-hidden">
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between gap-6">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             <Logo />
             <div className="mt-8 flex flex-col gap-2">
@@ -35,14 +32,28 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
             </div>
           </div>
           {session?.user && (
-            <div>
-              <ClientProfile />
+            <div className="border-t border-white/10 pt-4 mt-2">
+              <div className="flex items-center gap-3 px-1">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={session.user.image || ''} />
+                  <AvatarFallback>{session.user.name?.charAt(0) || 'U'}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{session.user.name}</p>
+                  <p className="text-xs text-white/60 truncate">{session.user.email}</p>
+                </div>
+              </div>
+              <div className="mt-3 px-1">
+                <Button variant="outline" className="w-full" onClick={() => signOut({ callbackUrl: '/' })}>
+                  Logout
+                </Button>
+              </div>
             </div>
           )}
         </SidebarBody>
       </Sidebar>
-      <div className="flex flex-1">
-        <div className="p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full">
+      <div className="flex-1 min-w-0 h-full overflow-y-auto">
+        <div className="p-4 md:p-8">
           {children}
         </div>
       </div>

@@ -1,108 +1,62 @@
 "use client"
-import React, { useState } from 'react'
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { useToast } from "@/components/ui/use-toast"
-import axios from 'axios';
-import { Separator } from "@/components/ui/separator"
+import React from 'react'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
+import { useToast } from '@/components/ui/use-toast'
+import axios from 'axios'
 import useRes from '@/lib/store'
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const formSchema = z.object({
-    transactionfor: z.string().min(2).max(50),
-    amount: z.string().min(1).max(1000000),
-    tags: z.string()
-})
+const formSchema = z
+    .object({
+        transactionfor: z.string().min(2, 'Please enter at least 2 characters').max(50),
+        amount: z
+            .preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number())
+            .refine((v) => !Number.isNaN(v), { message: 'Amount must be a number' })
+            .refine((v) => v !== 0, { message: 'Amount cannot be zero' }),
+        tags: z.string().optional().transform((v) => (v ?? '').trim()),
+    })
+    .superRefine((vals, ctx) => {
+        if (typeof vals.amount === 'number' && vals.amount < 0 && (!vals.tags || vals.tags.length === 0)) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please add a tag for expenses', path: ['tags'] })
+        }
+    })
 
-const tags = [
-    {
-        value: "fixed",
-        label: "Fixed",
-    },
-    {
-        value: "variable",
-        label: "Variable",
-    },
-    {
-        value: "periodic",
-        label: "Periodic",
-    }
-]
+const TAG_SUGGESTIONS = ['Food', 'Rent', 'Travel', 'Utilities', 'Shopping', 'Transport', 'Health']
 
 function AddTransactions() {
-
-
-    const [open, setOpen] = useState<boolean>(false)
-    const [value, setValue] = useState<any>("")
-
-    const { toast } = useToast();
+    const { toast } = useToast()
     const resp: any = useRes((state: any) => state.changeRess)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            transactionfor: "",
-            amount: '',
-            tags: '',
-        },
+        defaultValues: { transactionfor: '', amount: 0 as unknown as any, tags: '' },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const { transactionfor, amount } = values;
+        const { transactionfor, amount, tags } = values
+        const response = await axios.post('/api/add-transaction', { transactionfor, amount, tags })
 
-        const response = await axios.post('/api/add-transaction', { transactionfor, amount, tags: value });
-        // console.log(values, value);
-
-
-
-        resp(Math.random().toString());
+        resp(Math.random().toString())
         if (response.status === 200) {
-            form.reset({ transactionfor: '', amount: '', tags: '' });
-            setValue("");
-            toast({
-                title: "Transaction Added",
-                description: "Transaction has been added successfully",
-            })
+            form.reset({ transactionfor: '', amount: 0 as unknown as any, tags: '' })
+            toast({ title: 'Transaction Added', description: 'Transaction has been added successfully' })
         } else {
-            toast({
-                title: "Error",
-                description: "Error adding transaction",
-                variant: "destructive",
-            })
+            toast({ title: 'Error', description: 'Error adding transaction', variant: 'destructive' })
         }
     }
 
-
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 md:w-3/4 w-full mx-auto pt-6 px-6">
-                <h1 className='font-medium'>Add Transaction</h1>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h1 className="font-medium">Add Transaction</h1>
+                </div>
                 <Separator />
                 <FormField
                     control={form.control}
@@ -124,87 +78,51 @@ function AddTransactions() {
                         <FormItem>
                             <FormLabel>Amount (Negative for Expense)</FormLabel>
                             <FormControl>
-                                <Input type='number' placeholder="Amount" {...field} />
+                                <Input type="number" step="0.01" placeholder="Amount" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-
                 <FormField
                     control={form.control}
                     name="tags"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className='pr-8'>Tags (For Expense)</FormLabel>
-                            <FormControl>
-                                <Popover open={open} onOpenChange={setOpen}>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            role="combobox"
-                                            aria-expanded={open}
-                                            className="w-[200px] justify-between"
-                                        >
-                                            {value
-                                                ? tags.find((framework) => framework.value === value)?.label
-                                                : "Select tag..."}
-                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-[200px] p-0">
-                                        <Command>
-                                            <CommandList>
-                                                <CommandEmpty>No Tags Founds</CommandEmpty>
-                                                <CommandGroup>
-                                                    {tags.map((framework) => (
-                                                        <CommandItem
-                                                            key={framework.value}
-                                                            value={framework.value}
-                                                            onSelect={(currentValue) => {
-                                                                setValue(currentValue === value ? "" : currentValue)
-                                                                setOpen(false)
-                                                            }}
-                                                        >
-                                                            <Check
-                                                                className={cn(
-                                                                    "mr-2 h-4 w-4",
-                                                                    value === framework.value ? "opacity-100" : "opacity-0"
-                                                                )}
-                                                            />
-                                                            {framework.label}
-                                                        </CommandItem>
-                                                    ))}
-                                                </CommandGroup>
-                                            </CommandList>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
-
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    render={({ field }) => {
+                        const amountVal = form.watch('amount') as unknown as number
+                        const isExpense = typeof amountVal === 'number' && amountVal < 0
+                        return (
+                            <FormItem>
+                                <FormLabel>
+                                    Tag {isExpense && <span className="text-white/60">(required for expenses)</span>}
+                                </FormLabel>
+                                <FormControl>
+                                    <div className="space-y-2">
+                                        <Input placeholder="e.g. Food, Rent, Travel" {...field} />
+                                        <div className="flex flex-wrap gap-2">
+                                            {TAG_SUGGESTIONS.map((t) => (
+                                                <button
+                                                    key={t}
+                                                    type="button"
+                                                    onClick={() => field.onChange(t)}
+                                                    className={cn(
+                                                        'rounded-full border px-3 py-1 text-xs',
+                                                        field.value?.toLowerCase() === t.toLowerCase()
+                                                            ? 'border-blue-500 bg-blue-500/10 text-blue-300'
+                                                            : 'border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.06]'
+                                                    )}
+                                                >
+                                                    {t}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )
+                    }}
                 />
-
-
-                {/* <FormField
-                    control={form.control}
-                    name="isPending"
-                    render={({ field }) => (
-                        <FormItem className='items-center flex gap-2'>
-                            <FormLabel>Is the transaction Completed?</FormLabel>
-                            <FormControl className='flex w-full items-center'>
-                                <ToggleGroup type="single" value={field.value} defaultValue='pending' onValueChange={field.onChange} className='flex flex-col md:flex-row'>
-                                    <ToggleGroupItem value='completed' className='w-full md:w-1/2'>Completed</ToggleGroupItem>
-                                    <ToggleGroupItem value='pending' className='w-full md:w-1/2'>Pending</ToggleGroupItem>
-                                </ToggleGroup>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                /> */}
-                <Button type="submit" className='w-full'>Add Transaction</Button>
+                <Button type="submit">Add Transaction</Button>
             </form>
         </Form>
     )

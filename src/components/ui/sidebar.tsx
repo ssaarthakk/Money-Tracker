@@ -154,14 +154,13 @@ export const MobileSidebar = ({
   );
 };
 
+type SidebarLinkProps = { link: Links; className?: string } & React.ComponentProps<'a'>;
+
 export const SidebarLink = ({
   link,
   className,
   ...props
-}: {
-  link: Links;
-  className?: string;
-}) => {
+}: SidebarLinkProps) => {
   const { open, animate } = useSidebar();
   return (
     <a

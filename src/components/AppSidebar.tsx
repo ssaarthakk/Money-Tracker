@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useSidebar, Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { IconHome } from "@tabler/icons-react";
+import { IconHome, IconLogout } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,15 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
               {links.map((link, idx) => (
                 <SidebarLink key={idx} link={link} />
               ))}
+              {session?.user && (
+                <SidebarLink
+                  link={{ label: "Logout", href: "#", icon: <IconLogout className="text-neutral-700 dark:text-neutral-200 h-5 w-5" /> }}
+                  onClick={(e: React.MouseEvent) => {
+                    e.preventDefault();
+                    signOut({ callbackUrl: '/' });
+                  }}
+                />
+              )}
             </div>
           </div>
           {session?.user && (
@@ -42,11 +51,6 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
                   <p className="text-sm font-medium truncate">{session.user.name}</p>
                   <p className="text-xs text-white/60 truncate">{session.user.email}</p>
                 </div>
-              </div>
-              <div className="mt-3 px-1">
-                <Button variant="outline" className="w-full" onClick={() => signOut({ callbackUrl: '/' })}>
-                  Logout
-                </Button>
               </div>
             </div>
           )}

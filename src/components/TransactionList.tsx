@@ -1,12 +1,5 @@
 'use client';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import axios from "axios"
 import { useEffect, useState } from "react"
@@ -23,7 +16,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import useRes from "@/lib/store";
 import { useToast } from "./ui/use-toast";
-import Charts from "./Charts";
+import { cn } from "@/lib/utils";
 
 function CheckMark() {
     return (
@@ -58,7 +51,7 @@ function TransactionList() {
         getTransactions()
     }, [resp])
 
-    const [transactions, setTransactions] = useState<Array<{ _id: string, text: string, amount: number, tags: string, user: string }>>([])
+    const [transactions, setTransactions] = useState<Array<{ _id: string, text: string, amount: number, tags: string, user: string, createdAt?: string }>>([])
 
     const getTransactions = async () => {
         const res = await axios.get('/api/get-transactions')
@@ -68,67 +61,73 @@ function TransactionList() {
     const { toast } = useToast();
 
     return (
-        <ScrollArea className="h-[calc(88vh-152px)] w-full rounded-md py-2 px-4 border border-gray-800">
-            <h1 className="text-2xl text-center font-semibold pt-2">A list of your recent Transactions</h1>
-            <Table className="">
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>For</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead className="text-right">Tags</TableHead>
-                        <TableHead className="text-right">Delete?</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {
-                        transactions.map((transaction: { _id: string, text: string, amount: number, tags: string, user: string }) => (
-                            <TableRow key={transaction._id} className={`bg-opacity-15` + (transaction.amount > 0 ? ` bg-green-600` : ` bg-red-600`)}>
-                                <TableCell className="w-1/4">{transaction.text}</TableCell>
-                                <TableCell className="w-1/4">{transaction.amount}</TableCell>
-                                <TableCell className="text-right w-1/4">{transaction.tags !== '' ? transaction.tags.charAt(0).toUpperCase() + transaction.tags.slice(1) : "" }</TableCell>
-                                
-                                <TableCell className="text-center md:text-right w-1/4">
+        <ScrollArea className="h-[calc(88vh-152px)] w-full rounded-md py-2 px-4 border border-white/10 bg-white/[0.02]">
+            <h1 className="text-lg font-semibold py-2">Recent Transactions</h1>
+            {transactions.length === 0 ? (
+                <div className="flex h-32 items-center justify-center text-white/60 border border-dashed border-white/10 rounded-md">No transactions yet</div>
+            ) : (
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>For</TableHead>
+                            <TableHead>Amount</TableHead>
+                            <TableHead>Tag</TableHead>
+                            <TableHead className="text-right">Delete?</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {transactions.map((transaction) => (
+                            <TableRow key={transaction._id}>
+                                <TableCell className="w-2/5">
+                                    <div className="flex flex-col">
+                                        <span>{transaction.text}</span>
+                                        {transaction.createdAt && (
+                                            <span className="text-xs text-white/50">
+                                                {new Date(transaction.createdAt).toLocaleDateString()}
+                                            </span>
+                                        )}
+                                    </div>
+                                </TableCell>
+                                <TableCell className={cn('w-1/5 font-mono', transaction.amount >= 0 ? 'text-green-400' : 'text-red-400')}>
+                                    {transaction.amount}
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                    {transaction.tags ? (
+                                        <span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-2 py-0.5 text-xs">
+                                            {transaction.tags.charAt(0).toUpperCase() + transaction.tags.slice(1)}
+                                        </span>
+                                    ) : (
+                                        <span className="text-white/40 text-xs">—</span>
+                                    )}
+                                </TableCell>
+                                <TableCell className="text-right w-1/5">
                                     <AlertDialog>
-
-                                        <AlertDialogTrigger className="border border-gray-700 py-1 rounded-md px-2">
+                                        <AlertDialogTrigger className="border border-white/10 py-1 rounded-md px-2 hover:bg-white/[0.06]">
                                             <DeleteButton />
                                         </AlertDialogTrigger>
                                         <AlertDialogContent>
-
                                             <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogTitle>Delete this transaction?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete this transaction
-                                                    and remove your data from our servers.
+                                                    This action cannot be undone.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>
-
                                             <AlertDialogFooter>
-
-                                                <AlertDialogCancel onClick={() => { return }}>
-                                                    Cancel
-                                                </AlertDialogCancel>
-
+                                                <AlertDialogCancel onClick={() => { return }}>Cancel</AlertDialogCancel>
                                                 <AlertDialogAction onClick={async () => {
-                                                    const res = await axios.post('/api/delete-transaction', { id: transaction._id })
+                                                    await axios.post('/api/delete-transaction', { id: transaction._id })
                                                     changeRess(Math.random().toString())
-                                                    toast({
-                                                        title: "Transaction Deleted",
-                                                        description: "Transaction has been deleted successfully",
-                                                    })
-                                                }}>
-                                                    Continue
-                                                </AlertDialogAction>
-
+                                                    toast({ title: 'Transaction Deleted', description: 'Transaction has been deleted successfully' })
+                                                }}>Continue</AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
                                 </TableCell>
                             </TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
+                        ))}
+                    </TableBody>
+                </Table>
+            )}
         </ScrollArea>
     )
 }

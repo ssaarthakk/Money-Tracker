@@ -1,145 +1,109 @@
 "use client"
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts"
+import * as React from 'react'
+import axios from 'axios'
+import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, PieChart, Pie, Cell } from 'recharts'
 
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
+import { Card, CardContent } from '@/components/ui/card'
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 
-export const description = "An interactive bar chart"
+type Tx = { _id: string; text: string; amount: number; tags?: string; createdAt?: string }
 
-const chartData = [
-  { date: "2024-04-01", desktop: 222, mobile: 150 },
-  { date: "2024-04-02", desktop: 97, mobile: 180 },
-  { date: "2024-04-03", desktop: 167, mobile: 120 },
-  { date: "2024-04-04", desktop: 242, mobile: 260 },
-  { date: "2024-04-05", desktop: 373, mobile: 290 },
-  { date: "2024-04-06", desktop: 301, mobile: 340 },
-  { date: "2024-04-07", desktop: 245, mobile: 180 },
-  { date: "2024-04-08", desktop: 409, mobile: 320 },
-  { date: "2024-04-09", desktop: 59, mobile: 110 },
-  { date: "2024-04-10", desktop: 261, mobile: 190 },
-  { date: "2024-04-11", desktop: 327, mobile: 350 },
-  { date: "2024-04-12", desktop: 292, mobile: 210 },
-  { date: "2024-04-13", desktop: 342, mobile: 380 },
-  { date: "2024-04-14", desktop: 137, mobile: 220 },
-  { date: "2024-04-15", desktop: 120, mobile: 170 },
-  { date: "2024-04-16", desktop: 138, mobile: 190 },
-  { date: "2024-04-17", desktop: 446, mobile: 360 },
-  { date: "2024-04-18", desktop: 364, mobile: 410 },
-  { date: "2024-04-19", desktop: 243, mobile: 180 },
-  { date: "2024-04-20", desktop: 89, mobile: 150 },
-  { date: "2024-04-21", desktop: 137, mobile: 200 },
-  { date: "2024-04-22", desktop: 224, mobile: 170 },
-  { date: "2024-04-23", desktop: 138, mobile: 230 },
-  { date: "2024-04-24", desktop: 387, mobile: 290 },
-  { date: "2024-04-25", desktop: 215, mobile: 250 },
-  { date: "2024-04-26", desktop: 75, mobile: 130 },
-  { date: "2024-04-27", desktop: 383, mobile: 420 },
-  { date: "2024-04-28", desktop: 122, mobile: 180 },
-  { date: "2024-04-29", desktop: 315, mobile: 240 },
-  { date: "2024-04-30", desktop: 454, mobile: 380 },
-  { date: "2024-05-01", desktop: 165, mobile: 220 },
-  { date: "2024-05-02", desktop: 293, mobile: 310 },
-  { date: "2024-05-03", desktop: 247, mobile: 190 },
-  { date: "2024-05-04", desktop: 385, mobile: 420 },
-  { date: "2024-05-05", desktop: 481, mobile: 390 },
-  { date: "2024-05-06", desktop: 498, mobile: 520 },
-  { date: "2024-05-07", desktop: 388, mobile: 300 },
-  { date: "2024-05-08", desktop: 149, mobile: 210 },
-  { date: "2024-05-09", desktop: 227, mobile: 180 },
-  { date: "2024-05-10", desktop: 293, mobile: 330 },
-  { date: "2024-05-11", desktop: 335, mobile: 270 },
-  { date: "2024-05-12", desktop: 197, mobile: 240 },
-  { date: "2024-05-13", desktop: 197, mobile: 160 },
-  { date: "2024-05-14", desktop: 448, mobile: 490 },
-  { date: "2024-05-15", desktop: 473, mobile: 380 },
-  { date: "2024-05-16", desktop: 338, mobile: 400 },
-  { date: "2024-05-17", desktop: 499, mobile: 420 },
-  { date: "2024-05-18", desktop: 315, mobile: 350 },
-  { date: "2024-05-19", desktop: 235, mobile: 180 },
-  { date: "2024-05-20", desktop: 177, mobile: 230 },
-  { date: "2024-05-21", desktop: 82, mobile: 140 },
-  { date: "2024-05-22", desktop: 81, mobile: 120 },
-  { date: "2024-05-23", desktop: 252, mobile: 290 },
-  { date: "2024-05-24", desktop: 294, mobile: 220 },
-  { date: "2024-05-25", desktop: 201, mobile: 250 },
-  { date: "2024-05-26", desktop: 213, mobile: 170 },
-  { date: "2024-05-27", desktop: 420, mobile: 460 },
-  { date: "2024-05-28", desktop: 233, mobile: 190 },
-  { date: "2024-05-29", desktop: 78, mobile: 130 },
-  { date: "2024-05-30", desktop: 340, mobile: 280 },
-  { date: "2024-05-31", desktop: 178, mobile: 230 },
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
-]
+const COLORS = ['#60a5fa', '#34d399', '#f472b6', '#f59e0b', '#a78bfa', '#f87171', '#22d3ee']
 
-const chartConfig = {
-  views: { label: "Expenses" },
-} satisfies ChartConfig
+function aggregateMonthly(transactions: Tx[]) {
+  const byMonth: Record<string, { month: string; income: number; expense: number }> = {}
+  for (const t of transactions) {
+    const d = t.createdAt ? new Date(t.createdAt) : new Date()
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    if (!byMonth[key]) {
+      byMonth[key] = { month: key, income: 0, expense: 0 }
+    }
+    if (t.amount >= 0) byMonth[key].income += t.amount
+    else byMonth[key].expense += Math.abs(t.amount)
+  }
+  // sort and keep last 6 months
+  return Object.values(byMonth)
+    .sort((a, b) => (a.month < b.month ? -1 : 1))
+    .slice(-6)
+    .map((m) => ({ ...m, label: m.month }))
+}
+
+function aggregateCategories(transactions: Tx[]) {
+  const cats: Record<string, number> = {}
+  for (const t of transactions) {
+    if (t.amount < 0 && t.tags) {
+      const key = t.tags.trim().toLowerCase()
+      cats[key] = (cats[key] || 0) + Math.abs(t.amount)
+    }
+  }
+  return Object.entries(cats).map(([name, value]) => ({ name: name.charAt(0).toUpperCase() + name.slice(1), value }))
+}
+
+const barConfig = { income: { label: 'Income' }, expense: { label: 'Expense' } } satisfies ChartConfig
 
 function Charts() {
+  const [transactions, setTransactions] = React.useState<Tx[]>([])
+  const [loading, setLoading] = React.useState(true)
+
+  React.useEffect(() => {
+    let mounted = true
+    axios
+      .get('/api/get-transactions')
+      .then((res) => mounted && setTransactions(res.data.transactions || []))
+      .finally(() => mounted && setLoading(false))
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const monthly = React.useMemo(() => aggregateMonthly(transactions), [transactions])
+  const categories = React.useMemo(() => aggregateCategories(transactions), [transactions])
 
   return (
-    <Card className="border-white/10 bg-white/[0.03]">
-      <CardContent className="p-4 md:p-6">
-        <ChartContainer config={chartConfig} className="h-[260px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ left: 8, right: 8 }}>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <Card className="border-white/10 bg-white/[0.03]">
+        <CardContent className="p-4 md:p-6">
+          <h3 className="text-sm font-medium mb-2">Monthly Trends</h3>
+          <ChartContainer config={barConfig} className="h-[260px] w-full">
+            <BarChart data={monthly} margin={{ left: 8, right: 8 }}>
               <CartesianGrid vertical={false} strokeDasharray="3 3" />
               <XAxis
-                dataKey="date"
+                dataKey="label"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
                 minTickGap={24}
-                tickFormatter={(value) => {
-                  const date = new Date(value)
-                  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-                }}
               />
-              <Tooltip content={<ChartTooltipContent className="w-[150px]" nameKey="views" />} />
-              <Bar dataKey="desktop" fill="#60a5fa" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="mobile" fill="#c084fc" radius={[4, 4, 0, 0]} />
+              <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
+              <Bar dataKey="income" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expense" fill="#f472b6" radius={[4, 4, 0, 0]} />
             </BarChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      <Card className="border-white/10 bg-white/[0.03]">
+        <CardContent className="p-4 md:p-6">
+          <h3 className="text-sm font-medium mb-2">Spending by Category</h3>
+          <div className="h-[260px] w-full flex items-center justify-center">
+            {categories.length === 0 ? (
+              <div className="text-white/60 text-sm">No expense categories yet</div>
+            ) : (
+              <PieChart width={300} height={260}>
+                <Pie data={categories} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
+                  {categories.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
+              </PieChart>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
-export default Charts;
+export default Charts

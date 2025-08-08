@@ -7,6 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request) {
     const { transactionfor, amount, tags } = await request.json();
+    const numericAmount = Number(amount);
     await dbConnect();
 
     const session = await auth();
@@ -18,17 +19,17 @@ export async function POST(request: Request) {
     }
 
     try {
-        if (+amount < 0) {
+    if (numericAmount < 0) {
             await Transaction.create({
                 text: transactionfor,
-                amount,
+        amount: numericAmount,
                 tags,
                 user: session.user.email
             })
         } else {
             await Transaction.create({
                 text: transactionfor,
-                amount,
+        amount: numericAmount,
                 tags: "",
                 user: session.user.email
             })

@@ -1,15 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, ResponsiveContainer } from "recharts"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
@@ -114,60 +108,34 @@ const chartData = [
 ]
 
 const chartConfig = {
-  views: {
-    label: "Expenses",
-  }
+  views: { label: "Expenses" },
 } satisfies ChartConfig
 
 function Charts() {
 
   return (
-    <Card>
-      <CardContent className="px-2 sm:p-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
-              }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }}
-                />
-              }
-            />
-            <Bar dataKey="value" fill={`#2563eb`} />
-          </BarChart>
+    <Card className="border-white/10 bg-white/[0.03]">
+      <CardContent className="p-4 md:p-6">
+        <ChartContainer config={chartConfig} className="h-[260px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} margin={{ left: 8, right: 8 }}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={24}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+                }}
+              />
+              <Tooltip content={<ChartTooltipContent className="w-[150px]" nameKey="views" />} />
+              <Bar dataKey="desktop" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="mobile" fill="#c084fc" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
     </Card>

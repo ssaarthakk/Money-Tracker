@@ -1,13 +1,36 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from './ui/button'
 import { signIn } from 'next-auth/react'
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle'
+import { Loader2 } from 'lucide-react'
 
 function LoginButton() {
-  return (
-  <Button onClick={() => signIn('google', { callbackUrl: '/' }) } className='flex gap-2'><FaGoogle /><span>SignIn to Continue</span></Button>
-  )
-}
+  const [isLoading, setIsLoading] = useState(false)
 
-export default LoginButton
+  const handleSignIn = async () => {
+    setIsLoading(true)
+    try {
+      await signIn('google', { callbackUrl: '/' })
+    } catch (error) {
+      console.error('Sign in error:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <Button 
+      onClick={handleSignIn} 
+      disabled={isLoading}
+      className='flex gap-2'
+    >
+      {isLoading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <FaGoogle />
+      )}
+      <span>{isLoading ? 'Signing in...' : 'SignIn to Continue'}</span>
+    </Button>
+  )
+}export default LoginButton

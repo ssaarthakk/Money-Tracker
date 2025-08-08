@@ -1,17 +1,16 @@
 import React from 'react'
 import Proifle from './Proifle'
-import { Separator } from "@/components/ui/separator"
-
 
 function Navbar() {
     return (
-        <>
-        <nav className='w-full flex justify-between py-5 px-8'>
-            <span className='text-center text-3xl font-bold'>MoneyTracker</span>
-            <Proifle />
-        </nav>
-        <Separator />
-        </>
+        <header className="sticky top-0 z-40 w-full backdrop-blur supports-[backdrop-filter]:bg-neutral-900/60 border-b border-white/10">
+            <nav className='mx-auto max-w-6xl flex items-center justify-between py-4 px-6'>
+                <span className='text-center text-xl md:text-2xl font-bold tracking-tight'>
+                    MoneyTracker
+                </span>
+                <Proifle />
+            </nav>
+        </header>
     )
 }
 

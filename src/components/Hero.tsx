@@ -1,10 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
-// Simple, modern hero inspired by Aceternity-style aesthetics
 export default function Hero() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleGetStarted = async () => {
+    setIsLoading(true);
+    try {
+      await signIn('google', { callbackUrl: '/' });
+    } catch (error) {
+      console.error('Sign in error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className="relative w-full overflow-hidden">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-600/20 via-purple-600/10 to-transparent" />
@@ -20,9 +33,20 @@ export default function Hero() {
             Stay on top of your finances. Add transactions in seconds, visualize your cashflow, and make better decisions—without the clutter.
           </p>
           <div className="flex items-center gap-3">
-            <Button size="lg" onClick={() => signIn('google', { callbackUrl: '/' })}>
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button 
+              size="lg" 
+              onClick={handleGetStarted}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+              {isLoading && "Signing in..."}
             </Button>
             <a
               href="#features"

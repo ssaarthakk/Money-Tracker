@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconMenu2, IconX } from "@tabler/icons-react";
+import Image from "next/image";
 
 interface Links {
   label: string;
@@ -119,7 +120,7 @@ export const MobileSidebar = ({
         {...props}
       >
         <div className="flex items-center gap-2">
-          <img src="/favicon.ico" alt="MoneyTracker" className="h-5 w-5 rounded-sm" />
+          <Image src="/favicon.ico" alt="MoneyTracker" width={20} height={20} className="h-5 w-5 rounded-sm" />
           <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">MoneyTracker</span>
         </div>
         <div className="flex justify-end z-20">

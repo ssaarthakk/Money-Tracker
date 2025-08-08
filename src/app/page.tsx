@@ -23,7 +23,7 @@ export default async function Home() {
                 {/* Top: Welcome + Balance (and quick KPIs) */}
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 w-full">
                   <h2 className="text-2xl font-semibold">Welcome back, {session.user.name}</h2>
-                  <p className="text-white/70">Here's a quick snapshot of your finances.</p>
+                  <p className="text-white/70">Here&#39;s a quick snapshot of your finances.</p>
                   <div className="pt-4"><Balance /></div>
                   <div className="mt-2"><IncomeExpense /></div>
                 </div>

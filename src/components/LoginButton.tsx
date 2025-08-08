@@ -30,7 +30,7 @@ function LoginButton() {
       ) : (
         <FaGoogle />
       )}
-      <span>{isLoading ? 'Signing in...' : 'SignIn to Continue'}</span>
+  <span>{isLoading ? 'Signing in...' : 'Continue with Google'}</span>
     </Button>
   )
 }export default LoginButton

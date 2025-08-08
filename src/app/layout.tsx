@@ -18,13 +18,15 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark bg-neutral-950 text-white">
-      <AuthWrapper>
-      <body className={inter.className + '  w-screen'}>
-      {children}
-      <Toaster />
+      <head>
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+      </head>
+      <body className={inter.className + ' w-screen'}>
+        <AuthWrapper>
+          {children}
+          <Toaster />
+        </AuthWrapper>
       </body>
-      
-      </AuthWrapper>
     </html>
   );
 }

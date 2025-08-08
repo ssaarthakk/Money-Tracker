@@ -2,6 +2,9 @@ import dbConnect from "@/lib/dbConnect";
 import { auth } from "@/auth";
 import Transaction from "@/models/transaction.model";
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
     const { transactionfor, amount, tags } = await request.json();
     await dbConnect();

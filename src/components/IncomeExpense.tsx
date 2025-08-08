@@ -3,7 +3,6 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import useRes from '@/lib/store';
-import { LoaderOne } from '@/components/ui/loader'
 import { Skeleton } from '@/components/ui/skeleton'
 
 function IncomeExpense() {

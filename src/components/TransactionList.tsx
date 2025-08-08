@@ -17,7 +17,6 @@ import {
 import useRes from "@/lib/store";
 import { useToast } from "./ui/use-toast";
 import { cn } from "@/lib/utils";
-import { LoaderOne } from "@/components/ui/loader";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function CheckMark() {
@@ -68,9 +67,12 @@ function TransactionList() {
         <ScrollArea className="h-[calc(88vh-152px)] w-full rounded-md py-2 px-4 border border-white/10 bg-white/[0.02]">
             <h1 className="text-lg font-semibold py-2">Recent Transactions</h1>
             {loading ? (
-                <div className="flex h-32 items-center justify-center gap-3 text-white/60">
-                    <LoaderOne />
-                    <span>Loading transactions…</span>
+                <div className="flex h-32 items-center justify-center">
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="h-6 w-24" />
+                        <Skeleton className="h-6 w-24" />
+                        <Skeleton className="h-6 w-24" />
+                    </div>
                 </div>
             ) : transactions.length === 0 ? (
                 <div className="flex h-32 items-center justify-center text-white/60 border border-dashed border-white/10 rounded-md">No transactions yet</div>

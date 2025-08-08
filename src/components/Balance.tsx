@@ -2,7 +2,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import useRes from '@/lib/store'
-import { LoaderOne } from '@/components/ui/loader'
 import { Skeleton } from '@/components/ui/skeleton'
 
 function Balance() {
@@ -29,10 +28,7 @@ function Balance() {
             <div className='flex flex-col gap-1 items-center pt-4 pb-2'>
                     <h4 className='text-start text-base font-semibold'>YOUR BALANCE</h4>
                     {loading ? (
-                        <div className='flex items-center gap-3'>
-                            <Skeleton className='h-10 w-40' />
-                            <LoaderOne />
-                        </div>
+                        <Skeleton className='h-10 w-40' />
                     ) : (
                         <h1 className='text-4xl font-bold'>
                             Rs. {balance}

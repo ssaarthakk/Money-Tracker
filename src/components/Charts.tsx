@@ -6,8 +6,8 @@ import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, PieChart, Pie, Cell } fro
 
 import { Card, CardContent } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
-import { LoaderOne } from '@/components/ui/loader'
 import { Skeleton } from '@/components/ui/skeleton'
+import useRes from '@/lib/store'
 
 type Tx = { _id: string; text: string; amount: number; tags?: string; createdAt?: string }
 
@@ -42,13 +42,16 @@ function aggregateCategories(transactions: Tx[]) {
 }
 
 const barConfig = { income: { label: 'Income' }, expense: { label: 'Expense' } } satisfies ChartConfig
+const pieConfig = { value: { label: 'Spending' } } satisfies ChartConfig
 
 function MonthlyTrendsChart() {
   const [transactions, setTransactions] = React.useState<Tx[]>([])
   const [loading, setLoading] = React.useState(true)
+  const resp = useRes((state: any) => state.res)
 
   React.useEffect(() => {
     let mounted = true
+    setLoading(true)
     axios
       .get('/api/get-transactions')
       .then((res) => mounted && setTransactions(res.data.transactions || []))
@@ -56,7 +59,7 @@ function MonthlyTrendsChart() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [resp])
 
   const monthly = React.useMemo(() => aggregateMonthly(transactions), [transactions])
 
@@ -65,10 +68,7 @@ function MonthlyTrendsChart() {
       <CardContent className="p-4 md:p-6">
         <h3 className="text-sm font-medium mb-2">Monthly Trends</h3>
         {loading ? (
-          <div className="h-[260px] w-full flex items-center justify-center gap-3">
-            <LoaderOne />
-            <Skeleton className="h-6 w-32" />
-          </div>
+          <Skeleton className="h-[260px] w-full" />
         ) : (
           <ChartContainer config={barConfig} className="h-[260px] w-full">
             <BarChart data={monthly} margin={{ left: 8, right: 8 }}>
@@ -88,9 +88,11 @@ function MonthlyTrendsChart() {
 function CategoryPieChart() {
   const [transactions, setTransactions] = React.useState<Tx[]>([])
   const [loading, setLoading] = React.useState(true)
+  const resp = useRes((state: any) => state.res)
 
   React.useEffect(() => {
     let mounted = true
+    setLoading(true)
     axios
       .get('/api/get-transactions')
       .then((res) => mounted && setTransactions(res.data.transactions || []))
@@ -98,7 +100,7 @@ function CategoryPieChart() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [resp])
 
   const categories = React.useMemo(() => aggregateCategories(transactions), [transactions])
 
@@ -106,23 +108,35 @@ function CategoryPieChart() {
     <Card className="border-white/10 bg-white/[0.03]">
       <CardContent className="p-4 md:p-6">
         <h3 className="text-sm font-medium mb-2">Spending by Category</h3>
-        <div className="h-[260px] w-full flex items-center justify-center">
+  <div className="h-[280px] w-full flex items-center justify-center">
           {loading ? (
-            <div className="flex items-center gap-3">
-              <LoaderOne />
-              <Skeleton className="h-6 w-28" />
+            <div className="flex items-center justify-center">
+              <Skeleton className="h-44 w-44 rounded-full" />
             </div>
           ) : categories.length === 0 ? (
             <div className="text-white/60 text-sm">No expense categories yet</div>
           ) : (
-            <PieChart width={300} height={260}>
-              <Pie data={categories} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
-                {categories.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
-            </PieChart>
+            <ChartContainer config={pieConfig} className="h-[280px] w-full">
+              <PieChart>
+                <Pie
+                  data={categories}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={96}
+                  paddingAngle={2}
+                  stroke="rgba(255,255,255,0.15)"
+                  strokeWidth={1}
+                  label
+                >
+                  {categories.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
+              </PieChart>
+            </ChartContainer>
           )}
         </div>
       </CardContent>

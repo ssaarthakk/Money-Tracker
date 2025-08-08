@@ -112,26 +112,11 @@ export default function Hero() {
                                                             )}
                                                         </Button>
                                                     </form>
-                                                                                <div className="flex items-center justify-between mt-2">
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        onClick={async () => {
-                                                                                            try {
-                                                                                                await fetch('/api/auth/password/request', {
-                                                                                                    method: 'POST',
-                                                                                                    headers: { 'Content-Type': 'application/json' },
-                                                                                                    body: JSON.stringify({ email }),
-                                                                                                });
-                                                                                                alert('If the email exists, a reset link will be sent.');
-                                                                                            } catch (e) {
-                                                                                                alert('Could not request reset right now.');
-                                                                                            }
-                                                                                        }}
-                                                                                        className="text-sm text-white/70 hover:text-white underline-offset-2 hover:underline"
-                                                                                    >
-                                                                                        Forgot password?
-                                                                                    </button>
-                                                                                </div>
+                                                                                                            <div className="flex items-center justify-between mt-2">
+                                                                                                                <a href="/reset-password" className="text-sm text-white/70 hover:text-white underline-offset-2 hover:underline">
+                                                                                                                    Forgot password?
+                                                                                                                </a>
+                                                                                                            </div>
                                                     <div className="flex items-center gap-2 opacity-70 text-sm my-3">
                                                         <span>or</span>
                                                     </div>

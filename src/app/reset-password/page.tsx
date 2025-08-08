@@ -1,17 +1,42 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function ResetPasswordPage() {
-  const search = useSearchParams();
   const router = useRouter();
-  const token = useMemo(() => search.get("token") || "", [search]);
+  const [step, setStep] = useState<"email" | "password">("email");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const verifyEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/auth/password/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Failed to verify email");
+      if (!data?.exists) {
+        setMessage("No account found for this email.");
+        return;
+      }
+      setStep("password");
+      setMessage(null);
+    } catch (err: any) {
+      setMessage(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
@@ -19,11 +44,11 @@ export default function ResetPasswordPage() {
       const res = await fetch("/api/auth/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Failed to reset password");
-      setMessage("Password reset. You can sign in now.");
+      setMessage("Password updated. You can sign in now.");
       setPassword("");
       setTimeout(() => router.push("/"), 1200);
     } catch (err: any) {
@@ -34,29 +59,55 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <main className="min-h-[70vh] w-full">
-      <div className="mx-auto max-w-md px-6 py-12">
+    <main className="min-h-[100svh] w-full flex items-center justify-center">
+      <div className="w-full max-w-md px-6 py-8">
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
           <h1 className="text-2xl font-bold mb-2">Reset password</h1>
-          <p className="text-white/70 text-sm mb-6">Enter a new password for your account.</p>
-          {!token && (
-            <p className="text-amber-400/90 text-sm mb-4">Missing or invalid token. Please use the link from your email.</p>
+          {step === "email" && (
+            <>
+              <p className="text-white/70 text-sm mb-6">Enter your account email to continue.</p>
+              <form onSubmit={verifyEmail} className="space-y-4">
+                <input
+                  type="email"
+                  className="w-full rounded-md bg-white/10 border border-white/10 px-3 py-2 outline-none focus:border-white/30"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Button type="submit" disabled={loading} className="w-full">
+                  {loading ? "Checking…" : "Continue"}
+                </Button>
+                {message && <p className="text-sm text-white/80">{message}</p>}
+              </form>
+            </>
           )}
-          <form onSubmit={onSubmit} className="space-y-4">
-            <input
-              type="password"
-              className="w-full rounded-md bg-white/10 border border-white/10 px-3 py-2 outline-none focus:border-white/30"
-              placeholder="New password (min 6 chars)"
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <Button type="submit" disabled={loading || !token} className="w-full">
-              {loading ? "Resetting…" : "Reset password"}
-            </Button>
-            {message && <p className="text-sm text-white/80">{message}</p>}
-          </form>
+
+          {step === "password" && (
+            <>
+              <p className="text-white/70 text-sm mb-6">Set a new password for {email}.</p>
+              <form onSubmit={resetPassword} className="space-y-4">
+                <input
+                  type="password"
+                  className="w-full rounded-md bg-white/10 border border-white/10 px-3 py-2 outline-none focus:border-white/30"
+                  placeholder="New password (min 6 chars)"
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="secondary" onClick={() => setStep("email")} disabled={loading}>
+                    Back
+                  </Button>
+                  <Button type="submit" disabled={loading} className="flex-1">
+                    {loading ? "Saving…" : "Reset password"}
+                  </Button>
+                </div>
+                {message && <p className="text-sm text-white/80">{message}</p>}
+              </form>
+            </>
+          )}
         </div>
       </div>
     </main>

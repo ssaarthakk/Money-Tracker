@@ -1,5 +1,5 @@
 'use client';
-import axios from 'axios'
+import { api } from '@/lib/http'
 import React, { useEffect, useState } from 'react'
 import { Separator } from './ui/separator'
 import useRes from '@/lib/store';
@@ -13,11 +13,11 @@ function IncomeExpense() {
 
   const getBalance = async () => {
     try {
-      const balance = await axios.get('/api/get-income-expense')
+      const balance = await api.get('/api/get-income-expense')
       setIncome(balance.data.data.income)
       setExpense(balance.data.data.expense)
     } catch (error) {
-      console.log("Error While fetching the get balance api, maybe error in database connnection");
+      // toast already shown by interceptor
       return 0;
     } finally { setLoading(false) }
   }

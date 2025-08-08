@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/components/ui/use-toast'
-import axios from 'axios'
+import { api } from '@/lib/http'
 import useRes from '@/lib/store'
 import { cn } from '@/lib/utils'
 
@@ -35,7 +35,7 @@ function AddTransactions() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
             const { transactionfor, amount, tags } = values
-            const response = await axios.post('/api/add-transaction', { transactionfor, amount, tags })
+            const response = await api.post('/api/add-transaction', { transactionfor, amount, tags })
 
             resp(Math.random().toString())
             if (response.status === 200) {
@@ -45,7 +45,10 @@ function AddTransactions() {
                 toast({ title: 'Error', description: 'Error adding transaction', variant: 'destructive' })
             }
         } catch (e: any) {
-            toast({ title: 'Error', description: e?.response?.data?.message || 'Error adding transaction', variant: 'destructive' })
+            // Error toast already shown by interceptor; keep fallback description
+            if (!e?.response?.data?.message) {
+                toast({ title: 'Error', description: 'Error adding transaction', variant: 'destructive' })
+            }
         }
     }
 

@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
+  authorize: async (credentials) => {
         const rawEmail = (credentials?.email as string | undefined) ?? undefined;
         const email = rawEmail ? rawEmail.toLowerCase().trim() : undefined;
         const password = (credentials?.password as string | undefined) ?? "";
@@ -34,11 +34,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         await dbConnect();
         const user = await User.findOne({ email });
-        if (!user) return null;
-        if (!user.password) return null;
+  if (!user) return null;
+  if (!user.password) return null;
 
   const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) return null;
+  if (!isValid) return null;
 
         return {
           id: (user as any)._id?.toString?.() ?? (user as any).id?.toString?.(),

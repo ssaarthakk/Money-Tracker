@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { safeFetch } from "@/lib/http";
+import { toast } from "@/components/ui/use-toast";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -15,20 +17,20 @@ export default function RegisterForm() {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/register", {
+      const res = await safeFetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Registration failed");
+      // safeFetch already toasts on !ok
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
       if (result?.error) {
-        setMessage("Account created, but auto sign-in failed. Please sign in.");
+        toast({ title: "Sign-in", description: "Account created, but auto sign-in failed. Please sign in.", variant: "destructive" })
       } else {
         setMessage(null);
         window.location.href = "/";

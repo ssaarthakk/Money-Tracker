@@ -11,6 +11,8 @@ import { useSession } from 'next-auth/react';
 import LogoutButton from './LogoutButton';
 import * as Dialog from "@radix-ui/react-dialog";
 import { Button } from "@/components/ui/button";
+import { safeFetch } from "@/lib/http";
+import { toast } from "@/components/ui/use-toast";
 
 function ClientProfile() {
     const { data: session } = useSession();
@@ -66,14 +68,14 @@ function ClientProfile() {
                                             setBusy(true);
                                             setMsg(null);
                                             try {
-                                                                    const res = await fetch('/api/auth/password/set', {
+                                                const res = await safeFetch('/api/auth/password/set', {
                                                     method: 'POST',
                                                     headers: { 'Content-Type': 'application/json' },
-                                                                        body: JSON.stringify({ password: newPass }),
+                                                    body: JSON.stringify({ password: newPass }),
                                                 });
-                                                const data = await res.json();
-                                                if (!res.ok) throw new Error(data?.message || 'Failed to set password');
+                                                await res.json();
                                                 setMsg('Password updated.');
+                                                toast({ title: 'Password', description: 'Password updated successfully' })
                                                 setNewPass('');
                                             } catch (err: any) {
                                                 setMsg(err.message || 'Something went wrong');

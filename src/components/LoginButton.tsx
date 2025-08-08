@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import { signIn } from 'next-auth/react'
 import { FaGoogle } from '@react-icons/all-files/fa/FaGoogle'
 import { Loader2 } from 'lucide-react'
+import { toast } from '@/components/ui/use-toast'
 
 function LoginButton() {
   const [isLoading, setIsLoading] = useState(false)
@@ -14,6 +15,7 @@ function LoginButton() {
       await signIn('google', { callbackUrl: '/' })
     } catch (error) {
       console.error('Sign in error:', error)
+  toast({ title: 'Sign-in failed', description: 'Could not sign in with Google.', variant: 'destructive' })
     } finally {
       setIsLoading(false)
     }

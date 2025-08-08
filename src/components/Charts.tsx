@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import axios from 'axios'
+import { api } from '@/lib/http'
 import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, PieChart, Pie, Cell } from 'recharts'
 
 import { Card, CardContent } from '@/components/ui/card'
@@ -52,9 +52,10 @@ function MonthlyTrendsChart() {
   React.useEffect(() => {
     let mounted = true
     setLoading(true)
-    axios
+    api
       .get('/api/get-transactions')
-      .then((res) => mounted && setTransactions(res.data.transactions || []))
+      .then((res) => mounted && setTransactions(res.data?.transactions || []))
+      .catch(() => mounted && setTransactions([]))
       .finally(() => mounted && setLoading(false))
     return () => {
       mounted = false
@@ -93,9 +94,10 @@ function CategoryPieChart() {
   React.useEffect(() => {
     let mounted = true
     setLoading(true)
-    axios
+    api
       .get('/api/get-transactions')
-      .then((res) => mounted && setTransactions(res.data.transactions || []))
+      .then((res) => mounted && setTransactions(res.data?.transactions || []))
+      .catch(() => mounted && setTransactions([]))
       .finally(() => mounted && setLoading(false))
     return () => {
       mounted = false

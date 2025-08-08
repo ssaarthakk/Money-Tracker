@@ -1,7 +1,7 @@
 'use client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import axios from "axios"
+import { api } from "@/lib/http"
 import { useEffect, useState } from "react"
 import {
     AlertDialog,
@@ -77,9 +77,14 @@ function TransactionList() {
 
     const getTransactions = async () => {
         setLoading(true)
-        const res = await axios.get('/api/get-transactions')
-        setTransactions(res.data.transactions);
-        setLoading(false)
+        try {
+            const res = await api.get('/api/get-transactions')
+            setTransactions(Array.isArray(res.data?.transactions) ? res.data.transactions : [])
+        } catch {
+            setTransactions([])
+        } finally {
+            setLoading(false)
+        }
     }
 
     const { toast } = useToast();
@@ -327,9 +332,13 @@ function TransactionList() {
                                             <AlertDialogFooter>
                                                 <AlertDialogCancel onClick={() => { return }}>Cancel</AlertDialogCancel>
                                                 <AlertDialogAction onClick={async () => {
-                                                    await axios.post('/api/delete-transaction', { id: transaction._id })
-                                                    changeRess(Math.random().toString())
-                                                    toast({ title: 'Transaction Deleted', description: 'Transaction has been deleted successfully' })
+                                                    try {
+                                                        await api.post('/api/delete-transaction', { id: transaction._id })
+                                                        changeRess(Math.random().toString())
+                                                        toast({ title: 'Transaction Deleted', description: 'Transaction has been deleted successfully' })
+                                                    } catch {
+                                                        // toast already shown by interceptor
+                                                    }
                                                 }}>Continue</AlertDialogAction>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>

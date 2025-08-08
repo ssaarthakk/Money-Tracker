@@ -2,6 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Loader2, X } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import Footer from "@/components/Footer";
@@ -11,6 +13,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function Hero() {
+    const router = useRouter();
     const [isEmailLoading, setIsEmailLoading] = useState(false);
     const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const [email, setEmail] = useState("");
@@ -23,6 +26,7 @@ export default function Hero() {
             await signIn('google', { callbackUrl: '/' });
         } catch (error) {
             console.error('Sign in error:', error);
+            toast({ title: 'Sign-in failed', description: 'Could not sign in with Google.', variant: 'destructive' })
         } finally {
             setIsGoogleLoading(false);
         }
@@ -32,9 +36,17 @@ export default function Hero() {
         e.preventDefault();
         setIsEmailLoading(true);
         try {
-            await signIn('credentials', { email, password, callbackUrl: '/' });
+            const result = await signIn('credentials', { email, password, redirect: false });
+            if (result?.error) {
+                toast({ title: 'Invalid credentials', description: 'Please check your email and password.', variant: 'destructive' })
+                return;
+            }
+            // Success
+            setAuthOpen(false);
+            router.push('/');
         } catch (error) {
             console.error('Sign in error:', error);
+            toast({ title: 'Sign-in failed', description: 'Something went wrong. Please try again.', variant: 'destructive' })
         } finally {
             setIsEmailLoading(false);
         }

@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { safeFetch } from "@/lib/http";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -16,15 +18,15 @@ export default function ResetPasswordPage() {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/auth/password/request", {
+      const res = await safeFetch("/api/auth/password/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Failed to verify email");
+      // safeFetch will toast on error
       if (!data?.exists) {
-        setMessage("No account found for this email.");
+        toast({ title: "Not found", description: "No account found for this email.", variant: "destructive" })
         return;
       }
       setStep("password");
@@ -41,13 +43,13 @@ export default function ResetPasswordPage() {
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/auth/password/reset", {
+  const res = await safeFetch("/api/auth/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || "Failed to reset password");
+  // safeFetch will toast on error
       setMessage("Password updated. You can sign in now.");
       setPassword("");
       setTimeout(() => router.push("/"), 1200);

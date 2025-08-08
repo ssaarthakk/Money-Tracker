@@ -1,5 +1,5 @@
 'use client';
-import axios from 'axios'
+import { api } from '@/lib/http'
 import React, { useEffect, useState } from 'react'
 import useRes from '@/lib/store'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -10,14 +10,14 @@ function Balance() {
     const [loading, setLoading] = useState(true)
     const resp = useRes( (state :any) => state.res)
 
-    const getBalance = async () => {
-        try {
-            const balance = await axios.get('/api/get-balance')
-            setBalance(balance.data.balance)
-        } catch (error) {
-            console.log("Error While fetching the get balance api, maybe error in database connnection");
-            return 0;
-        } finally { setLoading(false) }
+        const getBalance = async () => {
+            try {
+                const balance = await api.get('/api/get-balance')
+                setBalance(balance.data.balance)
+            } catch (error) {
+                // toast is shown by interceptor
+                return 0;
+            } finally { setLoading(false) }
     }
     
     useEffect(() => {

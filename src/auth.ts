@@ -1,9 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/user.model";
-import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
@@ -25,12 +22,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!email || !password) return null;
 
+        // Dynamically import server-only modules to keep Edge bundle clean
+  const [dbModule, userModelModule, bcryptModule] = await Promise.all([
+          import("@/lib/dbConnect"),
+          import("@/models/user.model"),
+          import("bcryptjs"),
+        ]);
+        const dbConnect = dbModule.default;
+  const User = userModelModule.default as any;
+  const bcrypt: any = (bcryptModule as any).default ?? bcryptModule;
+
         await dbConnect();
         const user = await User.findOne({ email });
-  if (!user) return null;
-  if (!user.password) return null;
+        if (!user) return null;
+        if (!user.password) return null;
 
-        const isValid = await bcrypt.compare(password, user.password);
+  const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
 
         return {
@@ -45,6 +52,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === 'google' && user?.email) {
+        const [dbModule, userModelModule] = await Promise.all([
+          import("@/lib/dbConnect"),
+          import("@/models/user.model"),
+        ]);
+        const dbConnect = dbModule.default;
+        const User = userModelModule.default as any;
+
         await dbConnect();
         await User.updateOne(
           { email: user.email.toLowerCase() },

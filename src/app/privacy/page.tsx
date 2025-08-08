@@ -16,7 +16,7 @@ export default function PrivacyPage() {
 
           <div className="space-y-6 text-white/90">
             <p>
-              MoneyTracker ("we", "us", or "our") is committed to protecting your
+              MoneyTracker (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your
               privacy. This Privacy Policy explains what information we collect, how we
               use it, and the choices you have.
             </p>
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
               <h2 className="text-xl font-semibold mb-2">Changes to this policy</h2>
               <p className="text-white/85">
                 We may update this Privacy Policy from time to time. We will update the
-                "Last updated" date above and, where appropriate, provide additional notice.
+                &quot;Last updated&quot; date above and, where appropriate, provide additional notice.
               </p>
             </section>
 

@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Budget Management",
-  description: "Personalised budget management suited for your needs",
+  title: "MoneyTracker",
+  description: "Track your income and expenses effortlessly with MoneyTracker",
 };
 
 export default async function RootLayout({

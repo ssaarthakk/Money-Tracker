@@ -3,6 +3,7 @@ import AddTransactions from "@/components/AddTransactions";
 import Balance from "@/components/Balance";
 import IncomeExpense from "@/components/IncomeExpense";
 import Login from "@/components/Login";
+import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import TransactionList from "@/components/TransactionList";
 
@@ -28,8 +29,12 @@ export default async function Home() {
             </div>
             </div>
           ) : (
-            <div className="h-screen w-screen flex justify-center items-center">
-            <Login />
+            <div className="min-h-screen w-screen flex flex-col">
+              <Navbar />
+              <Hero />
+              <div className="py-10 flex justify-center">
+                <Login />
+              </div>
             </div>
           )
         }

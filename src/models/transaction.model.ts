@@ -22,6 +22,10 @@ const TransactionSchema: Schema<Transaction> = new mongoose.Schema({
     },
     tags: {
         type: String,
+        required: true,
+        default: 'others',
+        lowercase: true,
+        trim: true,
     },
 }, { timestamps: true });
 

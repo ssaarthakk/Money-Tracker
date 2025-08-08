@@ -5,7 +5,7 @@ import IncomeExpense from "@/components/IncomeExpense";
 import Login from "@/components/Login";
 import Hero from "@/components/Hero";
 import TransactionList from "@/components/TransactionList";
-import Charts from "@/components/Charts";
+import Charts, { CategoryPieChart } from "@/components/Charts";
 import Footer from "@/components/Footer";
 import AppSidebar from "@/components/AppSidebar";
 
@@ -19,32 +19,36 @@ export default async function Home() {
             <AppSidebar>
               <main className="space-y-6">
                 <section className="space-y-6">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                    <h2 className="text-2xl font-semibold">Welcome back, {session.user.name}</h2>
-                    <p className="text-white/70">Here's a quick snapshot of your finances.</p>
-                    <div className="pt-4"><Balance /></div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Left column: Welcome + Add Transaction */}
+                    <div className="space-y-6">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 w-full">
+                        <h2 className="text-2xl font-semibold">Welcome back, {session.user.name}</h2>
+                        <p className="text-white/70">Here's a quick snapshot of your finances.</p>
+                        <div className="pt-4"><Balance /></div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 w-full">
                         <h3 className="text-lg font-semibold mb-4">Add a transaction</h3>
                         <AddTransactions />
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                        <Charts />
-                      </div>
                     </div>
-                    
-                    <div className="lg:col-span-1 space-y-6">
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+
+                    {/* Right column: Income/Expense + Transaction List */}
+                    <div className="space-y-6">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 w-full">
                         <h3 className="text-lg font-semibold mb-2">Income vs Expense</h3>
                         <IncomeExpense />
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2">
+                      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 w-full">
                         <TransactionList />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Charts row below the two columns */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Charts />
+                    <CategoryPieChart />
                   </div>
                 </section>
               </main>

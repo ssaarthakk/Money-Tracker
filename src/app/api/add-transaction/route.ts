@@ -19,21 +19,12 @@ export async function POST(request: Request) {
     }
 
     try {
-    if (numericAmount < 0) {
-            await Transaction.create({
-                text: transactionfor,
-        amount: numericAmount,
-                tags,
-                user: session.user.email
-            })
-        } else {
-            await Transaction.create({
-                text: transactionfor,
-        amount: numericAmount,
-                tags: "",
-                user: session.user.email
-            })
-        }
+        await Transaction.create({
+            text: transactionfor,
+            amount: numericAmount,
+            tags: (tags || 'others').toString().trim().toLowerCase(),
+            user: session.user.email,
+        })
 
         return Response.json(
             { message: 'Transaction Added successfully', success: true },

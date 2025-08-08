@@ -27,14 +27,14 @@ function IncomeExpense() {
   }, [resp])
 
   return (
-    <div className='flex gap-2 text-2xl font-semibold justify-center pt-10'>
-      <div className='p-6'>
-        <h1>INCOME</h1>
+    <div className='flex gap-3 text-xl font-semibold justify-center pt-4'>
+      <div className='p-4'>
+        <h1 className='text-sm tracking-wide'>INCOME</h1>
         <p className='text-green-500'>Rs. {income}</p>
       </div>
       <Separator orientation='vertical' />
-      <div className='p-6'>
-        <h1>EXPENSE</h1>
+      <div className='p-4'>
+        <h1 className='text-sm tracking-wide'>EXPENSE</h1>
         <p className='text-red-500'>Rs. {expense}</p>
       </div>
     </div>

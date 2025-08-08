@@ -12,30 +12,24 @@ import axios from 'axios'
 import useRes from '@/lib/store'
 import { cn } from '@/lib/utils'
 
-const formSchema = z
-    .object({
-        transactionfor: z.string().min(2, 'Please enter at least 2 characters').max(50),
-        amount: z
-            .preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number())
-            .refine((v) => !Number.isNaN(v), { message: 'Amount must be a number' })
-            .refine((v) => v !== 0, { message: 'Amount cannot be zero' }),
-        tags: z.string().optional().transform((v) => (v ?? '').trim()),
-    })
-    .superRefine((vals, ctx) => {
-        if (typeof vals.amount === 'number' && vals.amount < 0 && (!vals.tags || vals.tags.length === 0)) {
-            ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please add a tag for expenses', path: ['tags'] })
-        }
-    })
+const formSchema = z.object({
+    transactionfor: z.string().min(2, 'Please enter at least 2 characters').max(50),
+    amount: z
+        .preprocess((v) => (typeof v === 'string' ? Number(v) : v), z.number())
+        .refine((v) => !Number.isNaN(v), { message: 'Amount must be a number' })
+        .refine((v) => v !== 0, { message: 'Amount cannot be zero' }),
+    tags: z.string().min(1, 'Tag is required').transform((v) => v.trim()),
+})
 
-const TAG_SUGGESTIONS = ['Food', 'Rent', 'Travel', 'Utilities', 'Shopping', 'Transport', 'Health']
+const TAG_SUGGESTIONS = ['Others', 'Food', 'Rent', 'Travel', 'Utilities', 'Shopping', 'Transport', 'Health']
 
 function AddTransactions() {
     const { toast } = useToast()
     const resp: any = useRes((state: any) => state.changeRess)
 
-    const form = useForm<z.infer<typeof formSchema>>({
+        const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { transactionfor: '', amount: 0 as unknown as any, tags: '' },
+            defaultValues: { transactionfor: '', amount: 0 as unknown as any, tags: 'Others' },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -92,9 +86,7 @@ function AddTransactions() {
                         const isExpense = typeof amountVal === 'number' && amountVal < 0
                         return (
                             <FormItem>
-                                <FormLabel>
-                                    Tag {isExpense && <span className="text-white/60">(required for expenses)</span>}
-                                </FormLabel>
+                                <FormLabel>Tag</FormLabel>
                                 <FormControl>
                                     <div className="space-y-2">
                                         <Input placeholder="e.g. Food, Rent, Travel" {...field} />

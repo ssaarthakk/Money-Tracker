@@ -27,21 +27,25 @@ function AddTransactions() {
     const { toast } = useToast()
     const resp: any = useRes((state: any) => state.changeRess)
 
-        const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-            defaultValues: { transactionfor: '', amount: 0 as unknown as any, tags: 'Others' },
+        defaultValues: { transactionfor: '', amount: 0 as unknown as any, tags: 'Others' },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const { transactionfor, amount, tags } = values
-        const response = await axios.post('/api/add-transaction', { transactionfor, amount, tags })
+        try {
+            const { transactionfor, amount, tags } = values
+            const response = await axios.post('/api/add-transaction', { transactionfor, amount, tags })
 
-        resp(Math.random().toString())
-        if (response.status === 200) {
-            form.reset({ transactionfor: '', amount: 0 as unknown as any, tags: '' })
-            toast({ title: 'Transaction Added', description: 'Transaction has been added successfully' })
-        } else {
-            toast({ title: 'Error', description: 'Error adding transaction', variant: 'destructive' })
+            resp(Math.random().toString())
+            if (response.status === 200) {
+                form.reset({ transactionfor: '', amount: 0 as unknown as any, tags: 'Others' })
+                toast({ title: 'Transaction Added', description: 'Transaction has been added successfully' })
+            } else {
+                toast({ title: 'Error', description: 'Error adding transaction', variant: 'destructive' })
+            }
+        } catch (e: any) {
+            toast({ title: 'Error', description: e?.response?.data?.message || 'Error adding transaction', variant: 'destructive' })
         }
     }
 
@@ -128,7 +132,20 @@ function AddTransactions() {
                         )
                     }}
                 />
-                                <Button type="submit" className="border border-white/10 bg-white/10 hover:bg-white/20 text-white">Add Transaction</Button>
+                <Button
+                    type="submit"
+                    disabled={form.formState.isSubmitting}
+                    className="border border-white/10 bg-white/10 hover:bg-white/20 text-white disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    {form.formState.isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                            Adding...
+                        </span>
+                    ) : (
+                        'Add Transaction'
+                    )}
+                </Button>
             </form>
         </Form>
     )

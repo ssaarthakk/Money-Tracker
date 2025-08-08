@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSidebar, Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { IconDashboard, IconHome, IconCreditCard, IconUser, IconSettings } from "@tabler/icons-react";
 import { useSession } from "next-auth/react";
-import Profile from "./Proifle";
+import ClientProfile from "./ClientProfile";
 
 const links = [
   {
@@ -36,7 +36,7 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
           </div>
           {session?.user && (
             <div>
-              <Profile />
+              <ClientProfile />
             </div>
           )}
         </SidebarBody>

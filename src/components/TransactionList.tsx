@@ -17,6 +17,8 @@ import {
 import useRes from "@/lib/store";
 import { useToast } from "./ui/use-toast";
 import { cn } from "@/lib/utils";
+import { LoaderOne } from "@/components/ui/loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function CheckMark() {
     return (
@@ -52,10 +54,12 @@ function TransactionList() {
     }, [resp])
 
     const [transactions, setTransactions] = useState<Array<{ _id: string, text: string, amount: number, tags: string, user: string, createdAt?: string }>>([])
+    const [loading, setLoading] = useState(true)
 
     const getTransactions = async () => {
-        const res = await axios.get('/api/get-transactions')
-        setTransactions(res.data.transactions);
+    const res = await axios.get('/api/get-transactions')
+    setTransactions(res.data.transactions);
+    setLoading(false)
     }
 
     const { toast } = useToast();
@@ -63,7 +67,12 @@ function TransactionList() {
     return (
         <ScrollArea className="h-[calc(88vh-152px)] w-full rounded-md py-2 px-4 border border-white/10 bg-white/[0.02]">
             <h1 className="text-lg font-semibold py-2">Recent Transactions</h1>
-            {transactions.length === 0 ? (
+            {loading ? (
+                <div className="flex h-32 items-center justify-center gap-3 text-white/60">
+                    <LoaderOne />
+                    <span>Loading transactions…</span>
+                </div>
+            ) : transactions.length === 0 ? (
                 <div className="flex h-32 items-center justify-center text-white/60 border border-dashed border-white/10 rounded-md">No transactions yet</div>
             ) : (
                 <Table>

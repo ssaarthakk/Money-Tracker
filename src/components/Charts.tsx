@@ -6,6 +6,8 @@ import { Bar, BarChart, CartesianGrid, XAxis, Tooltip, PieChart, Pie, Cell } fro
 
 import { Card, CardContent } from '@/components/ui/card'
 import { ChartConfig, ChartContainer, ChartTooltipContent } from '@/components/ui/chart'
+import { LoaderOne } from '@/components/ui/loader'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type Tx = { _id: string; text: string; amount: number; tags?: string; createdAt?: string }
 
@@ -43,12 +45,14 @@ const barConfig = { income: { label: 'Income' }, expense: { label: 'Expense' } }
 
 function MonthlyTrendsChart() {
   const [transactions, setTransactions] = React.useState<Tx[]>([])
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     let mounted = true
     axios
       .get('/api/get-transactions')
       .then((res) => mounted && setTransactions(res.data.transactions || []))
+      .finally(() => mounted && setLoading(false))
     return () => {
       mounted = false
     }
@@ -60,15 +64,22 @@ function MonthlyTrendsChart() {
     <Card className="border-white/10 bg-white/[0.03]">
       <CardContent className="p-4 md:p-6">
         <h3 className="text-sm font-medium mb-2">Monthly Trends</h3>
-        <ChartContainer config={barConfig} className="h-[260px] w-full">
-          <BarChart data={monthly} margin={{ left: 8, right: 8 }}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
-            <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
-            <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
-            <Bar dataKey="income" fill="#60a5fa" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expense" fill="#f472b6" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ChartContainer>
+        {loading ? (
+          <div className="h-[260px] w-full flex items-center justify-center gap-3">
+            <LoaderOne />
+            <Skeleton className="h-6 w-32" />
+          </div>
+        ) : (
+          <ChartContainer config={barConfig} className="h-[260px] w-full">
+            <BarChart data={monthly} margin={{ left: 8, right: 8 }}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} tickMargin={8} minTickGap={24} />
+              <Tooltip content={<ChartTooltipContent className="w-[180px]" nameKey="views" />} />
+              <Bar dataKey="income" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expense" fill="#f472b6" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   )
@@ -76,12 +87,14 @@ function MonthlyTrendsChart() {
 
 function CategoryPieChart() {
   const [transactions, setTransactions] = React.useState<Tx[]>([])
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     let mounted = true
     axios
       .get('/api/get-transactions')
       .then((res) => mounted && setTransactions(res.data.transactions || []))
+      .finally(() => mounted && setLoading(false))
     return () => {
       mounted = false
     }
@@ -94,7 +107,12 @@ function CategoryPieChart() {
       <CardContent className="p-4 md:p-6">
         <h3 className="text-sm font-medium mb-2">Spending by Category</h3>
         <div className="h-[260px] w-full flex items-center justify-center">
-          {categories.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center gap-3">
+              <LoaderOne />
+              <Skeleton className="h-6 w-28" />
+            </div>
+          ) : categories.length === 0 ? (
             <div className="text-white/60 text-sm">No expense categories yet</div>
           ) : (
             <PieChart width={300} height={260}>

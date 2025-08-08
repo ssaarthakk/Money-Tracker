@@ -118,11 +118,14 @@ export const MobileSidebar = ({
         )}
         {...props}
       >
-        <div className="flex justify-end z-20 w-full">
-          <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
-            onClick={() => setOpen(!open)}
-          />
+        <div className="flex items-center gap-2">
+          <img src="/favicon.ico" alt="MoneyTracker" className="h-5 w-5 rounded-sm" />
+          <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">MoneyTracker</span>
+        </div>
+        <div className="flex justify-end z-20">
+          <button aria-label="Open menu" onClick={() => setOpen(!open)}>
+            <IconMenu2 className="text-neutral-800 dark:text-neutral-200" />
+          </button>
         </div>
         <AnimatePresence>
           {open && (

@@ -13,7 +13,6 @@ export async function POST(request: Request) {
   const normalizedEmail = String(email).toLowerCase().trim();
   const user = await User.findOne({ email: normalizedEmail });
 
-  // Only return whether the email exists; no email sending or token creation
   const exists = !!user;
   return Response.json({ success: true, exists }, { status: 200 });
   } catch (error) {

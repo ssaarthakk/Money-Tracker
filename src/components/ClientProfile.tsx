@@ -98,8 +98,6 @@ function ClientProfile() {
                                 </Dialog.Content>
                             </Dialog.Portal>
                         </Dialog.Root>
-
-                        {/* Forgot Password now navigates to dedicated page */}
         </DropdownMenu>
     );
 }

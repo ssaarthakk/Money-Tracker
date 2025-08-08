@@ -28,7 +28,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await dbConnect();
         const user = await User.findOne({ email });
   if (!user) return null;
-  // If the user was created via OAuth and has no password, block credentials login
   if (!user.password) return null;
 
         const isValid = await bcrypt.compare(password, user.password);

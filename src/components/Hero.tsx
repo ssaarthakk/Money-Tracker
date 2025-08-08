@@ -11,31 +11,32 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function Hero() {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isEmailLoading, setIsEmailLoading] = useState(false);
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [authOpen, setAuthOpen] = useState(false);
 
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
+        setIsGoogleLoading(true);
         try {
             await signIn('google', { callbackUrl: '/' });
         } catch (error) {
             console.error('Sign in error:', error);
         } finally {
-            setIsLoading(false);
+            setIsGoogleLoading(false);
         }
     };
 
     const handleCredentialsLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
+        setIsEmailLoading(true);
         try {
             await signIn('credentials', { email, password, callbackUrl: '/' });
         } catch (error) {
             console.error('Sign in error:', error);
         } finally {
-            setIsLoading(false);
+            setIsEmailLoading(false);
         }
     }
 
@@ -101,8 +102,8 @@ export default function Hero() {
                                                             onChange={(e) => setPassword(e.target.value)}
                                                             required
                                                         />
-                                                        <Button type="submit" size="lg" disabled={isLoading} className="w-full">
-                                                            {isLoading ? (
+                                                        <Button type="submit" size="lg" disabled={isEmailLoading || isGoogleLoading} className="w-full">
+                                                            {isEmailLoading ? (
                                                                 <>
                                                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                                                     Signing in...
@@ -120,8 +121,8 @@ export default function Hero() {
                                                     <div className="flex items-center gap-2 opacity-70 text-sm my-3">
                                                         <span>or</span>
                                                     </div>
-                                                    <Button size="lg" onClick={handleGoogleSignIn} disabled={isLoading} className="w-full">
-                                                        {isLoading ? (
+                                                    <Button size="lg" onClick={handleGoogleSignIn} disabled={isGoogleLoading || isEmailLoading} className="w-full">
+                                                        {isGoogleLoading ? (
                                                             <>
                                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                                                 Signing in...

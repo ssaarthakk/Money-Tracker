@@ -36,14 +36,15 @@ export default function Hero() {
         e.preventDefault();
         setIsEmailLoading(true);
         try {
-            const result = await signIn('credentials', { email, password, redirect: false });
+            const result = await signIn('credentials', { email, password, redirect: false, callbackUrl: '/' });
             if (result?.error) {
                 toast({ title: 'Invalid credentials', description: 'Please check your email and password.', variant: 'destructive' })
                 return;
             }
-            // Success
             setAuthOpen(false);
-            router.push('/');
+                const target = (result as any)?.url || '/';
+                router.replace(target);
+            router.refresh();
         } catch (error) {
             console.error('Sign in error:', error);
             toast({ title: 'Sign-in failed', description: 'Something went wrong. Please try again.', variant: 'destructive' })

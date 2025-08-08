@@ -27,7 +27,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         await dbConnect();
         const user = await User.findOne({ email });
-        if (!user) return null;
+  if (!user) return null;
+  // If the user was created via OAuth and has no password, block credentials login
+  if (!user.password) return null;
 
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
@@ -42,6 +44,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google' && user?.email) {
+        await dbConnect();
+        await User.updateOne(
+          { email: user.email.toLowerCase() },
+          {
+            $setOnInsert: {
+              email: user.email.toLowerCase(),
+            },
+            $set: {
+              name: user.name,
+              image: user.image,
+            },
+          },
+          { upsert: true }
+        );
+        const dbUser = await User.findOne({ email: user.email.toLowerCase() });
+        if (dbUser) {
+          (user as any).id = (dbUser as any)._id?.toString?.();
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = (user as any).id || token.sub;

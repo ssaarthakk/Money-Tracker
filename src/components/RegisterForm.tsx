@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
 export default function RegisterForm() {
@@ -21,10 +22,17 @@ export default function RegisterForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.message || "Registration failed");
-      setMessage("Account created. You can sign in now.");
-      setName("");
-      setEmail("");
-      setPassword("");
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      if (result?.error) {
+        setMessage("Account created, but auto sign-in failed. Please sign in.");
+      } else {
+        setMessage(null);
+        window.location.href = "/";
+      }
     } catch (err: any) {
       setMessage(err.message || "Something went wrong");
     } finally {

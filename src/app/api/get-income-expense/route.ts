@@ -24,8 +24,8 @@ export async function GET() {
 
         if (balance.length === 0) {
             return Response.json(
-                { message: 'Error Calculating balance', success: true },
-                { status: 500 }
+                { message: 'There are no transactions yet', success: true },
+                { status: 200 }
             ); 
         }
 

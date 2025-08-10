@@ -58,8 +58,8 @@ export default function Hero() {
             <BackgroundLines className="relative min-h-[100svh] w-full">
                 {/* Spotlight overlay */}
                 <Spotlight duration={9} translateY={-320} />
-                <div className={"mx-auto max-w-6xl px-6 min-h-[100svh] flex flex-col relative"}>
-                    <div className={"flex-1 flex flex-col items-center justify-center text-center gap-6 relative z-40"}>
+                <div className={`mx-auto max-w-6xl px-6 min-h-[100svh] flex flex-col relative transition-all duration-300 ease-in-out ${authOpen ? 'md:pr-[460px]' : ''}`}>
+                    <div className={`flex-1 flex flex-col items-center justify-center text-center gap-6 relative z-40 transition-transform duration-300 ease-in-out will-change-transform ${authOpen ? 'md:-translate-x-4' : ''}`}>
                         <span className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-white/80 backdrop-blur-sm">
                             Track income & expenses with ease
                         </span>

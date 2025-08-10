@@ -60,6 +60,9 @@
     }
     }
 
+  /* Reserve space for the vertical scrollbar to prevent layout shift when dialogs lock body scroll */
+  html { scrollbar-gutter: stable; }
+
   /* Utilities */
   /* Hide number input spinners across browsers when using the .input-no-spinner class */
   .input-no-spinner::-webkit-outer-spin-button,

@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-  authorize: async (credentials) => {
+      authorize: async (credentials) => {
         const rawEmail = (credentials?.email as string | undefined) ?? undefined;
         const email = rawEmail ? rawEmail.toLowerCase().trim() : undefined;
         const password = (credentials?.password as string | undefined) ?? "";
@@ -23,22 +23,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!email || !password) return null;
 
         // Dynamically import server-only modules to keep Edge bundle clean
-  const [dbModule, userModelModule, bcryptModule] = await Promise.all([
+        const [dbModule, userModelModule, bcryptModule] = await Promise.all([
           import("@/lib/dbConnect"),
           import("@/models/user.model"),
           import("bcryptjs"),
         ]);
         const dbConnect = dbModule.default;
-  const User = userModelModule.default as any;
-  const bcrypt: any = (bcryptModule as any).default ?? bcryptModule;
+        const User = userModelModule.default as any;
+        const bcrypt: any = (bcryptModule as any).default ?? bcryptModule;
 
         await dbConnect();
         const user = await User.findOne({ email });
-  if (!user) return null;
-  if (!user.password) return null;
+        if (!user) return null;
+        if (!user.password) return null;
 
-  const isValid = await bcrypt.compare(password, user.password);
-  if (!isValid) return null;
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) return null;
 
         return {
           id: (user as any)._id?.toString?.() ?? (user as any).id?.toString?.(),

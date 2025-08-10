@@ -110,7 +110,7 @@ function CategoryPieChart() {
     <Card className="border-white/10 bg-white/[0.03]">
       <CardContent className="p-4 md:p-6">
         <h3 className="text-sm font-medium mb-2">Spending by Category</h3>
-  <div className="h-[280px] w-full flex items-center justify-center">
+        <div className="h-[280px] w-full flex items-center justify-center">
           {loading ? (
             <div className="flex items-center justify-center">
               <Skeleton className="h-44 w-44 rounded-full" />

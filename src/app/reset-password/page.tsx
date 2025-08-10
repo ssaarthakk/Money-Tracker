@@ -43,13 +43,13 @@ export default function ResetPasswordPage() {
     setLoading(true);
     setMessage(null);
     try {
-  const res = await safeFetch("/api/auth/password/reset", {
+      const res = await safeFetch("/api/auth/password/reset", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-  // safeFetch will toast on error
+      // safeFetch will toast on error
       setMessage("Password updated. You can sign in now.");
       setPassword("");
       setTimeout(() => router.push("/"), 1200);

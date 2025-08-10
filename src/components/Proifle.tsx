@@ -24,14 +24,14 @@ async function Proifle() {
             <DropdownMenuContent className='mr-5 mt-2'>
                 <DropdownMenuItem className='flex gap-3'>
                     <span>
-                    <Avatar>
-                        <AvatarImage src={session?.user?.image || ''} />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                        <Avatar>
+                            <AvatarImage src={session?.user?.image || ''} />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
                     </span>
                     <span className='flex flex-col'>
-                    <span>{session?.user?.name}</span>
-                    <span>{session?.user?.email}</span>
+                        <span>{session?.user?.name}</span>
+                        <span>{session?.user?.email}</span>
                     </span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>

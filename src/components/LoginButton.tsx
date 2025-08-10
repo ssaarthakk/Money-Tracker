@@ -15,15 +15,15 @@ function LoginButton() {
       await signIn('google', { callbackUrl: '/' })
     } catch (error) {
       console.error('Sign in error:', error)
-  toast({ title: 'Sign-in failed', description: 'Could not sign in with Google.', variant: 'destructive' })
+      toast({ title: 'Sign-in failed', description: 'Could not sign in with Google.', variant: 'destructive' })
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <Button 
-      onClick={handleSignIn} 
+    <Button
+      onClick={handleSignIn}
       disabled={isLoading}
       className='flex gap-2'
     >
@@ -32,7 +32,7 @@ function LoginButton() {
       ) : (
         <FaGoogle />
       )}
-  <span>{isLoading ? 'Signing in...' : 'Continue with Google'}</span>
+      <span>{isLoading ? 'Signing in...' : 'Continue with Google'}</span>
     </Button>
   )
-}export default LoginButton
+} export default LoginButton

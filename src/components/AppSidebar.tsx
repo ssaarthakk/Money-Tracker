@@ -69,7 +69,7 @@ export default function AppSidebar({ children }: { children: React.ReactNode }) 
 function Logo() {
   return (
     <div className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20">
-  <Image src="/favicon.ico" alt="MoneyTracker" width={20} height={20} className="h-5 w-5 rounded-sm" />
+      <Image src="/favicon.ico" alt="MoneyTracker" width={20} height={20} className="h-5 w-5 rounded-sm" />
       {/* <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" /> */}
       <span className="font-medium text-black dark:text-white whitespace-pre">
         MoneyTracker

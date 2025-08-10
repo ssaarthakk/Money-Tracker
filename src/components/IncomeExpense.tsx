@@ -22,7 +22,7 @@ function IncomeExpense() {
     } finally { setLoading(false) }
   }
 
-  const resp = useRes( (state :any) => state.res)
+  const resp = useRes((state: any) => state.res)
 
   useEffect(() => {
     getBalance()

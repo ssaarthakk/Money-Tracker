@@ -66,11 +66,11 @@ function AddTransactions() {
                         <FormItem>
                             <FormLabel>Transaction For</FormLabel>
                             <FormControl>
-                                            <Input
-                                                placeholder="Transaction For"
-                                                className="bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
+                                <Input
+                                    placeholder="Transaction For"
+                                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
+                                    {...field}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -83,13 +83,13 @@ function AddTransactions() {
                         <FormItem>
                             <FormLabel>Amount (Negative for Expense)</FormLabel>
                             <FormControl>
-                                            <Input
-                                                type="number"
-                                                step="0.01"
-                                                placeholder="Amount"
-                                                className="input-no-spinner bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
-                                                {...field}
-                                            />
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="Amount"
+                                    className="input-no-spinner bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
+                                    {...field}
+                                />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -104,24 +104,24 @@ function AddTransactions() {
                         return (
                             <FormItem>
                                 <FormLabel>Tag</FormLabel>
-                                                <FormControl>
-                                                    <div className="space-y-2">
-                                                        <Input
-                                                            placeholder="e.g. Food, Rent, Travel"
-                                                            className="bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
-                                                            {...field}
-                                                        />
-                                                        <div className="flex flex-wrap gap-2">
+                                <FormControl>
+                                    <div className="space-y-2">
+                                        <Input
+                                            placeholder="e.g. Food, Rent, Travel"
+                                            className="bg-white/10 border-white/20 text-white placeholder:text-white/60 rounded-lg focus-visible:ring-sky-500/40 focus-visible:ring-offset-0"
+                                            {...field}
+                                        />
+                                        <div className="flex flex-wrap gap-2">
                                             {TAG_SUGGESTIONS.map((t) => (
                                                 <button
                                                     key={t}
                                                     type="button"
                                                     onClick={() => field.onChange(t)}
                                                     className={cn(
-                                                                        'rounded-full border px-3 py-1 text-xs transition-colors',
+                                                        'rounded-full border px-3 py-1 text-xs transition-colors',
                                                         field.value?.toLowerCase() === t.toLowerCase()
-                                                                            ? 'border-sky-500 bg-sky-500/10 text-sky-300'
-                                                                            : 'border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.06]'
+                                                            ? 'border-sky-500 bg-sky-500/10 text-sky-300'
+                                                            : 'border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.06]'
                                                     )}
                                                 >
                                                     {t}

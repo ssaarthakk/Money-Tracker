@@ -2,7 +2,7 @@
 import { signIn, signOut } from "@/auth"
 import { revalidatePath } from "next/cache"
 
-export const signin = async ( provider: string ) => {
+export const signin = async (provider: string) => {
     await signIn(provider, { callbackUrl: '/' })
     revalidatePath('/')
 }

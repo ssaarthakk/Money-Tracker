@@ -1,4 +1,32 @@
-# Running the Next.js App Locally
+# 💸 Money Tracker
+
+A modern, full-stack financial dashboard designed to help you track your expenses, manage balances, and visualize your financial health with rich analytics.
+
+---
+
+## 🚀 Tech Stack
+
+### Frontend & UI
+- **Framework:** [Next.js 14](https://nextjs.org/) (App Router & Server-Side Rendering)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) with `tailwindcss-animate`
+- **Component Library:** [Shadcn UI](https://ui.shadcn.com/) (built on top of [Radix UI](https://www.radix-ui.com/) primitives)
+- **Animations:** [Framer Motion / Motion](https://www.framer.com/motion/) for fluid transitions & micro-interactions
+- **Charts & Data Viz:** [Recharts](https://recharts.org/) for beautiful, responsive financial graphs
+- **Icons:** [Lucide React](https://lucide.dev/) & [Tabler Icons](https://tabler.io/icons)
+
+### Backend & Database
+- **Database:** [MongoDB](https://www.mongodb.com/)
+- **ORM / ODM:** [Mongoose](https://mongoosejs.com/) for elegant MongoDB object modeling
+- **Authentication:** [NextAuth.js (v5 / Auth.js)](https://authjs.dev/) supporting secure credentials provider and Google OAuth
+- **State Management:** [Zustand](https://github.com/pmndrs/zustand) for lightweight, high-performance client state
+- **Form Handling:** [React Hook Form](https://react-hook-form.com/) combined with [Zod](https://zod.dev/) for robust schema validation
+- **HTTP Client:** [Axios](https://axios-http.com/) for streamlined API communications
+- **Security:** [Bcrypt.js](https://github.com/dcodeIO/bcrypt.js) for password hashing and authentication security
+
+---
+
+## 💻 Running the App Locally
 
 ## Prerequisites
 Make sure you have the following installed on your device:
